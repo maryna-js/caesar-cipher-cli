@@ -4,10 +4,10 @@ const {Transform, pipeline} = require('stream');
 const caesar = require('./caesar_cipher_algo.js');
 
 program
-    .option('-s, --shift <value>', 'a shift')
+    .requiredOption('-s, --shift <value>', 'a shift')
     .option('-i, --input <value>', 'an input file')
     .option('-o, --output <value>', 'an output file')
-    .option('-a, --action <value>', 'an action encode/decode')
+    .requiredOption('-a, --action <value>', 'an action encode/decode')
     .parse(process.argv);
 
 program.shift = parseInt(program.shift);
@@ -28,7 +28,7 @@ const transformStream = new Transform({
               txt = caesar.decode(chunk.toString('utf-8'), program.shift);
               break;
             default:
-              console.error("Action is not valid");
+              console.error("Some problem with action");
               process.exit(1);
           }
 
