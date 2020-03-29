@@ -1,6 +1,7 @@
 const { program } = require('commander');
 const fs = require('fs');
 const {Transform, pipeline} = require('stream');
+const caesar = require('./caesar_cipher_algo.js');
 
 program
     .option('-s, --shift <value>', 'a shift')
@@ -24,9 +25,21 @@ if (program.action !== 'encode' && program.action !== 'decode') {
 }
 
 const transformStream = new Transform({
-    transform(callback) {
-        let a = 'Aopz pz zljyla. Tlzzhnl hivba "_" zftivs!'
-        callback(null, a);
+    transform(chunk, encoding, callback) {
+        let txt;
+        switch (program.action) {
+            case "encode":
+              txt = caesar.encode(chunk.toString("utf-8"), program.shift);
+              break;
+            case "decode":
+              txt = caesar.decode(chunk.toString("utf-8"), program.shift);
+              break;
+            default:
+              console.error("Action doesn't exist");
+              process.exit(1);
+          }
+
+        callback(null, txt);
     }
 });
 
@@ -43,7 +56,5 @@ pipeline(
         if (error) {
             throw error;
         }
-
-        console.log('File encoded');
     }
 );
