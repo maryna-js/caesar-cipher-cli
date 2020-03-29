@@ -15,13 +15,6 @@ program.shift = parseInt(program.shift);
 if (program.shift < 0) {
   console.error('Invalid shift value');
   process.exit(1);
-} else {
-  console.log('okay');
-}
-
-if (program.action !== 'encode' && program.action !== 'decode') {
-  console.error('Invalid action value');
-  process.exit(1);
 }
 
 const transformStream = new Transform({
@@ -29,13 +22,13 @@ const transformStream = new Transform({
         let txt;
         switch (program.action) {
             case "encode":
-              txt = caesar.encode(chunk.toString("utf-8"), program.shift);
+              txt = caesar.encode(chunk.toString('utf-8'), program.shift);
               break;
             case "decode":
-              txt = caesar.decode(chunk.toString("utf-8"), program.shift);
+              txt = caesar.decode(chunk.toString('utf-8'), program.shift);
               break;
             default:
-              console.error("Action doesn't exist");
+              console.error("Action is not valid");
               process.exit(1);
           }
 
