@@ -37,7 +37,7 @@ const transformStream = new Transform({
 });
 
 const readStream = fs.createReadStream(program.input,'utf8');
-const writeStream = fs.createWriteStream(program.output);
+const writeStream = fs.createWriteStream(program.output, {flags: 'a'});
 
 pipeline(
     program.input ? readStream : process.stdin,
@@ -45,9 +45,9 @@ pipeline(
     program.output ? writeStream : process.stdin.on('end', () => {
         process.stdout.write('\n');
     }),
-    (error) => {
-        if (error) {
-            throw error;
-        }
+    (err) => {
+        if (err) {
+            console.error('Check the path of the file. It is incorrect')
+        } 
     }
 );
