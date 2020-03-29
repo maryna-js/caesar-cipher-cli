@@ -1,13 +1,13 @@
 const { program } = require('commander');
-const fs = require('fs');
 const {Transform, pipeline} = require('stream');
 const caesar = require('./caesar_cipher_algo.js');
+const stream = require('./stream.js');
 
 program
-    .requiredOption('-s, --shift <value>', 'a shift')
+    .option('-s, --shift <value>', 'a shift')
     .option('-i, --input <value>', 'an input file')
     .option('-o, --output <value>', 'an output file')
-    .requiredOption('-a, --action <value>', 'an action encode/decode')
+    .option('-a, --action <value>', 'an action encode/decode')
     .parse(process.argv);
 
 program.shift = parseInt(program.shift);
@@ -36,15 +36,13 @@ const transformStream = new Transform({
     }
 });
 
-const readStream = fs.createReadStream(program.input,'utf8');
-const writeStream = fs.createWriteStream(program.output, {flags: 'a'});
+const read = stream.readStream(program.input);
+const write = stream.writeStream(program.output, {flags: 'a'});
 
 pipeline(
-    program.input ? readStream : process.stdin,
+    read,
     transformStream,
-    program.output ? writeStream : process.stdin.on('end', () => {
-        process.stdout.write('\n');
-    }),
+    write,
     (err) => {
         if (err) {
             console.error('Check the path of the file. It is incorrect')
